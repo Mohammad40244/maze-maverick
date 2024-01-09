@@ -77,12 +77,23 @@ int main(){
         }
     }
     if (i==x){ 
-        if (kol>=0){ 
+        if (kol>=10){
+            cout << " " << kol << " " << char (179);               
+        }
+        else if (kol>=0){ 
             cout << "  " << kol << " " << char (179);
         }
-        else {
+        else if (kol<0 and kol>-10){
             cout << " " << kol << " " << char (179);            
         }
+        else if (kol<=-10){
+            cout << "" << kol << " " << char (179);            
+        }        
+
+
+
+
+
     }
 
         
