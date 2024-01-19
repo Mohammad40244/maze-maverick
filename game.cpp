@@ -14,18 +14,13 @@
 
 using namespace std;
 
-
-
-
 // global variables //
 
 bool check = false ;
 vector<int> positionj ;
 vector<int> positioni ;
-vector<vector<int>> maze;
+vector<vector<int>> maze ;
 // global variables //
-
-
 
 
 vector<vector<int>> vector_generating ( int copyrow , int copycolumn);
@@ -62,7 +57,7 @@ void path_finding (vector<vector<int>> maze , int row , int column , int copyrow
     //print_table(maze);
     //cout << endl;
     if (row==copyrow-1 and column == copycolumn-1 and length == 0 and sum == maze[copyrow-1][copycolumn-1] ){
-        //cout << "gg" ;
+        cout << "gg" ;
         check = true ;
         positioni.push_back(row);
         positionj.push_back(column);
@@ -339,46 +334,70 @@ void hard_maze(vector<vector<int>> maze , int copyrow , int copycolumn , int len
     maze_generating (copymaze , max , min , maxblock , minblock , length); 
 
 }
+
 void maze_generating (vector<vector<int>> copymaze , int max , int min , int maxblock , int minblock , int length){
     int sum=0 , midblock ;
-    midblock = (rand()%(maxblock-minblock+1) + minblock-1) ;
+    midblock = (rand()%(maxblock-minblock+1) + minblock) ;
+    
+    vector<vector<int>> copycopymaze(copymaze.size(), vector<int> (copymaze[0].size(), 1));
+    
+//    for (int i=0 ; i<copycopymaze.size() ; ++i)
+//        for (int j=0 ; j<copycopymaze[0].size() ; ++j)
+//            copycopymaze[i][j] = 1;
+
+
+    for (int i=0 ; i<positioni.size() ; ++i){
+        copycopymaze[positioni[i]][positionj[i]] = 0 ;      
+    }
 
     vector<int> v ;
     for (int i=0 ; i<midblock ; ++i){
         v.push_back(0);
     }
+    int num = 0 ;
     for (int i=0 ; i<((copymaze.size())*(copymaze[0].size()) - length - midblock-1) ; ++i){
-        v.push_back( rand()%(max-min+1) + min);
+        num =  rand()%(max-min+1) + min ;
+        if (num == 0){ 
+            v.push_back(num+1); 
+        }
+        else { 
+            v.push_back(num);
+        }
     }
     
-    random_shuffle(v.begin(),v.end());
-
-    for (int i=0 ; i<v.size() ; ++i){
-        cout << v[i] << " " ;
-    }
-    cout << endl;
+//    random_shuffle(v.begin(),v.end());
+//
+//    for (int i=0 ; i<v.size() ; ++i){
+//        cout << v[i] << " " ;
+//    }
+//    cout << endl;
     
-    for (int i=0 ; i<copymaze.size() ; ++i){ 
-        for (int j=0 ; j<copymaze[0].size() ; ++j){
-            if (copymaze[i][j]!=0){
-                copymaze[i][j]= v[v.size()-1] ;
+    for (int i=0 ; i<copycopymaze.size() ; ++i){ 
+        for (int j=0 ; j<copycopymaze[0].size() ; ++j){
+            //cout << copycopymaze[i][j] << " " ;
+            if (copycopymaze[i][j]==1){
+                copycopymaze[i][j]= v[v.size()-1] ;
                 v.pop_back() ;
             }
         }   
+        //cout << endl ;
     }
 
 for (int i=0 ; i<positioni.size() ; ++i){
-    copymaze[positioni[i]][positionj[i]] = rand()%(max-min+1) + min ;
-    sum += copymaze[positioni[i]][positionj[i]] ;
+    num =  rand()%(max-min+1) + min ;
+    if (num == 0){
+        num ++;
+    }
+    copycopymaze[positioni[i]][positionj[i]] = num ;
+    sum += copycopymaze[positioni[i]][positionj[i]] ;
 }
-    sum -= copymaze[positioni[0]][positionj[0]] ;
-    copymaze[positioni[0]][positionj[0]] = sum;
+    sum -= copycopymaze[positioni[0]][positionj[0]] ;
+    copycopymaze[positioni[0]][positionj[0]] = sum;
 
-    print_table (copymaze);
+    print_table (copycopymaze);
 
 
 }
-
 
 void simple_maze(vector<vector<int>> maze , int copyrow , int copycolumn , int length){
     int row = 0 , column = 0 , sum=0 , max=3 , min=-3 , maxblock=4 , minblock=2;
@@ -388,9 +407,5 @@ void simple_maze(vector<vector<int>> maze , int copyrow , int copycolumn , int l
     maze_generating (copymaze , max , min , maxblock , minblock , length); 
 
 }
-
-
-
-
 
 
