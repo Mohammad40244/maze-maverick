@@ -47,14 +47,7 @@ int main(){
 
 
 
-
-
-
 main_output ();
-
-
-
-
 
 
 }
@@ -64,9 +57,10 @@ void main_output(){
     int row=0 , column=0 , copyrow=0 , copycolumn=0 , sum=0 , length , max , min , maxblock=0 , minblock=0 , num ;
     string x ;
 
-
+    setConsoleColor (10);
     cout << "      *********Hello and welcom to the game *********" << endl << endl ;
-    
+    setConsoleColor(7);
+
     jump :
     
     cout << " Enter the option to access different parts of the program : " << endl ;
@@ -147,6 +141,7 @@ void main_output(){
         cin >> num ;
         if (num == 1){
 
+            // file //
 
         }
         else if (num == 2){
@@ -189,7 +184,51 @@ void main_output(){
             goto jump4 ; 
         }
     }
+    else if(num == 3){
+        cout << "choose one of these options " << endl ; 
+        cout << "1. Choose from Existing Maps"<< endl ;
+        cout << "2. Import a Custom Map" << endl ;
+        cout << "3. go back to menu " << endl;
+        cin >> num ;
+        if (num == 1){
 
+            // file //
+
+        }
+        else if (num == 2){
+            int row , column ;
+            cout << "please enter your row and column and length then enter your numbers of custom maze that you want to put in " << endl ;
+            cout << " row :";
+            cin >> row ;
+            cout << " column :"; 
+            cin >> column ;
+            cout << " length :" ;
+            cin >> length ;
+            vector<vector<int>> custom_maze = vector_generating (row , column);
+            vector<vector<int>> copycustom_maze = vector_generating (row , column);
+            cout << "please enter your custom maze numbers " << endl ;
+            for (int i=0 ; i<row ; ++i){ 
+                for (int j=0  ; j<column ; ++j){ 
+                    cin >> custom_maze[i][j] ;
+                    copycustom_maze[i][j] = custom_maze[i][j];
+                }
+            }
+
+            path_finding (custom_maze , 0 , 0 , row , column , sum , length);
+
+            for (int i=0 ; i<positioni.size() ; ++i){
+                paintingi.push_back(positioni[i]);
+                paintingj.push_back(positionj[i]);
+            }
+            for (int i=0 ; i<positioni.size() ; ++i){
+                cout << paintingi[i] << " " << paintingj[i] << endl ;
+            }
+
+            print_table_color (copycustom_maze);
+
+        }
+
+    }
 
 
 }
@@ -444,15 +483,17 @@ void print_table_color(const vector<vector<int>>& table) {
         		cout << setw(width) << table[i][j] << " ";
             }
             
-            //else if (i == rows - 1 and j ==  table[0].size() - 1) {
-            //	setConsoleColor(12);
-            //	cout << setw(width) << table[i][j] << " ";
-            //}
+            else if (i == rows - 1 and j ==  table[0].size() - 1) {
+            	setConsoleColor(9);
+            	cout << setw(width) << table[i][j] << " ";
+            }
             
             else if(check_is_in(i , j)){
             	setConsoleColor(10);
                  cout<< setw(width)<<table[i][j]<<" ";
             }
+
+
             else{
             	setConsoleColor(7);
                 cout<< setw(width)<<table[i][j]<<" ";
