@@ -8,8 +8,8 @@
 #include <string>
 #include <dirent.h>
 #include <Windows.h>
-
-
+#include <conio.h>
+#include <chrono>
 
 using namespace std;
 
@@ -45,41 +45,46 @@ void main_output ();
 
 int main(){ 
 
-
-
 main_output ();
-
 
 }
 
 void main_output(){
+    //system("cls");
     srand(time(0));
     int row=0 , column=0 , copyrow=0 , copycolumn=0 , sum=0 , length , max , min , maxblock=0 , minblock=0 , num ;
-    string x ;
+    char x ;
 
     setConsoleColor (10);
     cout << "      *********Hello and welcom to the game *********" << endl << endl ;
-    setConsoleColor(7);
 
     jump :
-    
+    setConsoleColor(15);    
     cout << " Enter the option to access different parts of the program : " << endl ;
+    setConsoleColor(2);
 	cout << "1. Create a New Map" << endl ;
+    setConsoleColor(1);
     cout << "2. Playground " << endl ;
+    setConsoleColor(4);
 	cout << "3. Solve a Maze" << endl ;
+    setConsoleColor(14);
     cout << "4. History " << endl ;
+    setConsoleColor(13);
     cout << "5. Leaderboard" << endl ;
+    setConsoleColor(11);
     cout << "6. Exit" << endl ;
+    setConsoleColor(7);
 
-    cin >> num ;
-    if (num == 1){
+
+    x=_getch();
+    if(x == '1'){
         cout << "chose witch map do you want to make :" << endl ;
         cout << "1. easy maze" << endl ;
         cout << "2. hard maze" << endl ;
         cout << "3. go back to menu " << endl ;
-        cin >> num ;
         jump1 :
-        if (num == 1){
+        x=_getch();
+        if (x == '1'){
             jump3 :
             cout << "select your row and column " << endl ;
             cout << "row :" ;
@@ -95,7 +100,7 @@ void main_output(){
             vector<vector<int>> copymaze = maze ;
             simple_maze (maze , copyrow , copycolumn);
         }
-        else if (num == 2){
+        else if (x == '2'){
             jump2 :
             cout << "select your row and column " << endl ;
             cout << "row :" ;
@@ -123,60 +128,70 @@ void main_output(){
             }
             hard_maze (maze , copyrow , copycolumn , length , max , min , maxblock , minblock);
         }
-        else if (num == 3){
+        else if (x == '3'){
             goto jump ;
         }
         else {
-            cout << "your choise is not valid , please try again " << endl ;
+            cout << "your choise is not valid , please chose 1 or 2 or 3 " << endl ;
             goto jump1 ;
         }
 
     }
-    else if (num == 2){
+    else if (x == '2'){
         jump4 :
         cout << "choose one of these options " << endl ; 
         cout << "1. Choose from Existing Maps"<< endl ;
         cout << "2. Import a Custom Map" << endl ;
         cout << "3. go back to menu " << endl ;
-        cin >> num ;
-        if (num == 1){
+        x=_getch();
+        if (x == '1'){
 
-            // file //
-
-        }
-        else if (num == 2){
-            int row , column ;
-            jump7 :
-            cout << "please enter your row and column then enter your numbers of custom maze that you want to put in " << endl ;
-            cout << " row :";
-            cin >> row ;
-            cout << " column :"; 
-            cin >> column ;
-            vector<vector<int>> custom_maze = vector_generating (row , column);
-            cout << "please enter your custom maze numbers " << endl ;
-            for (int i=0 ; i<row ; ++i)
-                for (int j=0  ; j<column ; ++j)
-                    cin >> custom_maze[i][j] ;
-            jump8 :
-            cout << "if you want to play this map press y" << endl ;
-            cout << "if you want to make another one and delete this one press n" << endl ;
             
-            cin >> x ;
-
-            if (x== "y" or x == "Y"){
-                playground (custom_maze); 
-            }
-            else if (x == "n" or x == "N"){
-                goto jump7 ;
-            }
-            else {
-                cout << "please choose Y or N" << endl ;
-                goto jump8 ;
-            }
-
 
         }
-        else if (num == 3){
+        else if (x == '2'){
+            int row , column , linee = 0 , soton ;
+            string name , address , address2 , liner ;
+            vector<int> v;
+
+            // how to get a file and put it in the maze //
+            cout << "please enter your custom map adress " << endl;
+            cin >> address ;
+
+            address = "maps/" + address + ".txt";
+            ifstream map(address);
+            while (getline (map , liner)){
+                linee++;
+            }
+            map.close() ;
+            ifstream map2(address);
+            while (map2>>soton){
+                v.push_back(soton);
+            }
+            soton = v.size() / linee ;  
+
+            vector<vector<int>> maze1 = vector_generating (linee , soton);
+
+            int ** maze = new int* [linee];
+            for (int i=0 ; i<soton ; ++i){
+                maze[i] = new int [soton];
+            }    
+            for (int i=0 ; i<linee ; ++i)
+                for (int j=0 ; j<soton ; ++j)
+                    maze[i][j] = v[i*soton+ j];
+
+            for (int i=0 ; i<linee ; ++i){ 
+                for (int j=0 ; j<soton ; ++j){ 
+                    maze1[i][j] = maze[i][j] ;
+                }
+            }
+            playground(maze1);
+        //auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        //string timeString = std::ctime(&currentTime);
+        //ofstream fout(address);
+        //cout << timeString << endl ;
+        }
+        else if (x == '3'){
             goto jump ;
         }
         else {
@@ -184,37 +199,58 @@ void main_output(){
             goto jump4 ; 
         }
     }
-    else if(num == 3){
+    else if(x == '3'){
         cout << "choose one of these options " << endl ; 
         cout << "1. Choose from Existing Maps"<< endl ;
         cout << "2. Import a Custom Map" << endl ;
         cout << "3. go back to menu " << endl;
-        cin >> num ;
-        if (num == 1){
+        x=_getch();
+        if (x == '1'){
 
             // file //
 
         }
-        else if (num == 2){
-            int row , column ;
-            cout << "please enter your row and column and length then enter your numbers of custom maze that you want to put in " << endl ;
-            cout << " row :";
-            cin >> row ;
-            cout << " column :"; 
-            cin >> column ;
-            cout << " length :" ;
+        else if (x == '2'){
+
+            int row , column , linee = 0 , soton ;
+            string name , address , liner ;
+            vector<int> v;
+
+            // how to get a file and put it in the maze //
+            cout << "please enter your custom map adress :" << endl;
+            cin >> address ;
+            cout << "please enter your length :" << endl ;
             cin >> length ;
-            vector<vector<int>> custom_maze = vector_generating (row , column);
-            vector<vector<int>> copycustom_maze = vector_generating (row , column);
-            cout << "please enter your custom maze numbers " << endl ;
-            for (int i=0 ; i<row ; ++i){ 
-                for (int j=0  ; j<column ; ++j){ 
-                    cin >> custom_maze[i][j] ;
-                    copycustom_maze[i][j] = custom_maze[i][j];
+            // remember to delete "maps/" and ".txt" //
+            address = "maps/" + address + ".txt" ;
+            ifstream map(address);
+            while (getline (map , liner)){
+                linee++;
+            }
+            map.close() ;
+            ifstream map2(address);
+            while (map2>>soton){
+                v.push_back(soton);
+            }
+            soton = v.size() / linee ;  
+
+            vector<vector<int>> custom_maze = vector_generating (linee , soton);
+            vector<vector<int>> copycustom_maze = vector_generating (linee , soton);
+            int ** maze = new int* [linee];
+            for (int i=0 ; i<soton ; ++i){
+                maze[i] = new int [soton];
+            }    
+            for (int i=0 ; i<linee ; ++i)
+                for (int j=0 ; j<soton ; ++j)
+                    maze[i][j] = v[i*soton+ j];
+
+            for (int i=0 ; i<linee ; ++i){ 
+                for (int j=0 ; j<soton ; ++j){ 
+                    custom_maze[i][j] = maze[i][j] ;
+                    copycustom_maze[i][j] = maze[i][j] ;
                 }
             }
-
-            path_finding (custom_maze , 0 , 0 , row , column , sum , length);
+            path_finding (custom_maze , 0 , 0 , linee , soton , sum , length);
 
             for (int i=0 ; i<positioni.size() ; ++i){
                 paintingi.push_back(positioni[i]);
@@ -224,12 +260,19 @@ void main_output(){
                 cout << paintingi[i] << " " << paintingj[i] << endl ;
             }
 
+            auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            string timeString = std::ctime(&currentTime);
+            //ofstream fout(address);
+            cout << timeString << endl ;
             print_table_color (copycustom_maze);
 
         }
 
     }
-
+    else {
+    cout << "your number is not valid please chose a number beetwen 1 to 6 " << endl ;
+    goto jump ; 
+    }
 
 }
 
@@ -297,7 +340,7 @@ void path_generating (vector<vector<int>> maze , int row , int column , int copy
     //print_table(maze);
     //cout << endl;
     if (row==copyrow-1 and column == copycolumn-1 and length == 0 ){
-    //    cout << "gg" ;
+    //  cout << "gg" ;
         check = true ;
         positioni.push_back(row);
         positionj.push_back(column);
@@ -462,7 +505,7 @@ bool check_is_valid (vector<vector<int>> maze , int row , int column , int copyr
 }
 
 void print_table_color(const vector<vector<int>>& table) {
-    
+    //system("cls");
     int rows = table.size();
     //find how much the space be
     int width = 0;
@@ -527,6 +570,13 @@ void hard_maze(vector<vector<int>> maze , int copyrow , int copycolumn , int len
 
 void maze_generating (vector<vector<int>> copymaze , int max , int min , int maxblock , int minblock , int length){
     int sum=0 , midblock ;
+    if (maxblock < minblock ){
+        swap (maxblock , minblock ) ;
+    }
+    if (max < min ){
+        swap (max , min) ;
+    }
+
     midblock = (rand()%(maxblock-minblock+1) + minblock) ;
     
     vector<vector<int>> copycopymaze(copymaze.size(), vector<int> (copymaze[0].size(), 1));
@@ -540,6 +590,14 @@ void maze_generating (vector<vector<int>> copymaze , int max , int min , int max
         v.push_back(0);
     }
     int num = 0 ;
+
+
+
+    if ((copymaze.size())*(copymaze[0].size()) - length - midblock-1 < 0){
+        cout << "it is impossible to generate this maze , please try again " << endl ;
+        return ;
+    }
+
     for (int i=0 ; i<((copymaze.size())*(copymaze[0].size()) - length - midblock-1) ; ++i){
         num =  rand()%(max-min+1) + min ;
         if (num == 0 and min<=0){ 
@@ -609,6 +667,8 @@ void playground (vector<vector<int>> custom_maze){
     cout << "if you want to go left press A" << endl ;
     cout << "if you want to go up press W" << endl ;
     cout << "if you want to undo press Z" << endl ;
+    int timebase = time(0) ;
+    //cout << timebase << endl ;
     while (x !=custom_maze.size()-1 or y != custom_maze[0].size()-1){ 
         jump9 :
         cin >> move ;
@@ -673,6 +733,10 @@ void playground (vector<vector<int>> custom_maze){
             }
         }
         else if (move == "Z" or move == "z"){
+            if (paintingiz.size()==0){
+                cout << "your move is not valid , please try again" << endl ;
+                goto jump9 ;  
+            }
             num -= custom_maze[x][y] ;
             copycustom_maze[x][y] = custom_maze[x][y] ;
             y -= paintingjz[paintingjz.size()-1] ;
@@ -691,12 +755,15 @@ void playground (vector<vector<int>> custom_maze){
         print_table_color (custom_maze);
     }
     num -= custom_maze[x][y] ;
+    int timesecond = time(0) ;
     if (num == custom_maze[x][y]){
-        cout <<" win " << endl ;
+        cout <<" win " << endl ; 
+        cout << timesecond - timebase << endl ;
     }
     else {
     cout << "lost " << endl ;
-    cout << num ;
+    cout << timesecond - timebase << endl ;
+    //cout << num ;
     }
 }
 
