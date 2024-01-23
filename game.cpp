@@ -28,9 +28,10 @@ vector<int> paintingjz ;
 
 // global variables //
 
+int incrementNumberInFile(string fileName, bool incrementSecondLine);
 bool createFile(string name) ;
 void deleteFirstLineIfMoreThanTenLines();
-void appendToFile(const string& input, bool result , int num , string date , string mapname);
+void appendToFile(string input, bool result , int num , string date , string mapname);
 vector<vector<int>> vector_generating ( int copyrow , int copycolumn);
 void path_finding (vector<vector<int>> maze , int row , int column , int copyrow , int copycolumn , int sum , int length);
 void path_generating (vector<vector<int>> maze , int row , int column , int copyrow , int copycolumn , int sum , int length);
@@ -268,6 +269,7 @@ void main_output(){
             if (x == '2'){
                 setConsoleColor(2);
                 cout << "GOOD GAME " << endl ;
+                setConsoleColor(7);
                 return ;
             }
             else {
@@ -370,6 +372,7 @@ void main_output(){
                 if (x == '2'){
                     setConsoleColor(2);
                     cout << "GOOD GAME " << endl ;
+                    setConsoleColor(7);
                     return ;
                 }
                 else {
@@ -509,6 +512,7 @@ void main_output(){
                 if (x == '2'){
                     setConsoleColor(2);
                     cout << "GOOD GAME " << endl ;
+                    setConsoleColor(7);
                     return ;
                 }
                 else {
@@ -1040,6 +1044,7 @@ void playground (vector<vector<int>> custom_maze){
         appendToFile (username , true , timesecond - timebase , timeString , mapsname );
         deleteFirstLineIfMoreThanTenLines();
         createFile (username);
+        incrementNumberInFile( username, true);
         //cout <<" win " << endl ; 
         cout << timesecond - timebase << endl ;
     }
@@ -1047,6 +1052,7 @@ void playground (vector<vector<int>> custom_maze){
         appendToFile (username , false , timesecond - timebase , timeString , mapsname);    
         deleteFirstLineIfMoreThanTenLines();
         createFile (username);
+        incrementNumberInFile( username, false);
         //cout << "lost " << endl ;
         cout << timesecond - timebase << endl ;
         //cout << num ;
@@ -1111,7 +1117,7 @@ bool check_is_number (string variable){
     return true ;
 }
 
-void appendToFile(const string& input, bool result , int num , string date , string mapname) {
+void appendToFile(string input, bool result , int num , string date , string mapname) {
     // Open the file in append mode
     ofstream outputFile("output.txt", ios::app);
 
@@ -1121,7 +1127,7 @@ void appendToFile(const string& input, bool result , int num , string date , str
     }
 
     // Write the result (won or lose) and the input to the file
-    outputFile<< input<< " " << mapname  << " "  << (result ? "win" : "lose") << " " << num << "seconds " << date << endl;
+    outputFile<< input<< " " << mapname  << " "  << (result ? "win" : "lose") << " " << num << "seconds " << date ;
 
     // Close the file
     outputFile.close();
@@ -1131,7 +1137,7 @@ void appendToFile(const string& input, bool result , int num , string date , str
 }
 
 void deleteFirstLineIfMoreThanTenLines() {
-    const int maxLines = 20;
+    int maxLines = 10;
     const string filename = "output.txt";
 
     ifstream inputFile(filename);
@@ -1147,6 +1153,7 @@ void deleteFirstLineIfMoreThanTenLines() {
 
     while (getline(inputFile, line)) {
         lines.push_back(line);
+
     }
 
     inputFile.close();
@@ -1168,7 +1175,6 @@ void deleteFirstLineIfMoreThanTenLines() {
 
         outputFile.close();
 
-        cout << "First line deleted as the file exceeded " << maxLines << " lines." << endl;
     }
 }
 
@@ -1178,10 +1184,50 @@ bool createFile(string name) {
     std::ifstream fileCheck(filename.c_str());
     if (!fileCheck.good()) {
         std::ofstream file(filename.c_str());
-        //cout << "File '" << filename << "' created successfully." << std::endl;
+      //  std::cout << "File '" << filename << "' created successfully." << std::endl;
         return true;  // File created successfully
     } else {
-        //cout << "File '" << filename << "' already exists. Choose a different name." << std::endl;
+       // std::cout << "File '" << filename << "' already exists. Choose a different name." << std::endl;
         return false;  // File already exists
     }
+}
+
+int incrementNumberInFile(string fileName, bool incrementSecondLine) {
+    std::ifstream inFile(fileName.c_str());  // Open the file for reading
+
+    int number1 = 0, number2 = 0;
+    
+    if (inFile.is_open()) {
+        // If the file exists, read the current numbers
+        inFile >> number1;
+        inFile >> number2;
+        inFile.close();
+    }
+    //else {
+    //    std::cerr << "Error opening file for reading!" << std::endl;
+    //    return 1;  // Return an error code
+    //}
+
+    // Increment the first number
+    number1++;
+
+    // Increment the second number if the boolean is true
+    if (incrementSecondLine) {
+        number2++;
+    }
+
+    std::ofstream outFile(fileName.c_str());  // Open the file for writing
+
+    if (outFile.is_open()) {
+        // Write the updated numbers to the file
+        outFile << number1 << std::endl;
+        outFile << number2 << std::endl;
+        outFile.close();
+        //std::cout << "Numbers written to file: " << number1 << " and " << number2 << std::endl;
+    } else {
+        std::cerr << "Error opening file for writing!" << std::endl;
+        return 1;  // Return an error code
+    }
+
+    return 0;
 }
