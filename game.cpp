@@ -16,6 +16,7 @@ using namespace std;
 
 // global variables //
 
+string address ;
 bool check = false ;
 vector<int> positionj ;
 vector<int> positioni ;
@@ -58,8 +59,11 @@ int main(){
 
 void main_output(){
     srand(time(0));
-    int row=0 , column=0 , copyrow=0 , copycolumn=0 , sum=0 , length=0 , max=0 , min=0 , maxblock=0 , minblock=0 , num=0 ;
+    int row = 0, column = 0, copyrow = 0, copycolumn = 0, sum = 0, length = 0, max = 0, min = 0, maxblock = 0, minblock = 0, num = 0 , linee = 0 , soton=0 ;
     char x ;
+
+    string name = "" , liner = "" , receiver;
+    vector<int> v;
     string variable ;
 
     setConsoleColor (10);
@@ -248,6 +252,10 @@ void main_output(){
             vector<vector<int>> copymaze = vector_generating (copyrow , copycolumn);
             if (length < copyrow + copycolumn - 2 or length%2 != (copyrow + copycolumn)%2 or length > (copyrow*copycolumn)-1 or length + maxblock + 1 >  (copyrow*copycolumn) ){
                 cout << "there are no such maze exsist , please try again " << endl ;
+                maze.clear();
+                maze.shrink_to_fit();
+                copymaze.clear();
+                copymaze.shrink_to_fit();
                 goto jump2 ;
             }
             hard_maze (maze , copyrow , copycolumn , length , max , min , maxblock , minblock);
@@ -288,6 +296,8 @@ void main_output(){
 
     }
     else if (x == '2'){
+        linee = 0 ; soton=0 ;
+        name = "" ; liner = "" ; receiver = "";
         jump4 :
         cout << "choose one of these options " << endl ; 
         setConsoleColor(11);
@@ -299,18 +309,99 @@ void main_output(){
         setConsoleColor(7);
         x=_getch();
         if (x == '1'){
+            ifstream names ("names.txt");
+            while (getline(names , receiver)){
+                cout << receiver << endl ;
+            }
+            cout << "choose one of these mazes" << endl ;
+            cin.ignore();
+            getline(cin , address);
+            //cin >> address;
+            names.close();
 
-            
+            address = "maps/" + address + ".txt";
+            ifstream map(address);
+            while (getline (map , liner)){
+                linee++;
+            }
+            map.close() ;
+            ifstream map2(address);
+            while (map2>>soton){
+                v.push_back(soton);
+            }
+            soton = v.size() / linee ; 
+            map2.close();
 
+            vector<vector<int>> maze1 = vector_generating (linee , soton);
+
+            for (int i=0 ; i<linee ; ++i){ 
+                for (int j=0 ; j<soton ; ++j){ 
+                    maze1[i][j] = v[i*soton+ j];
+                }
+            }
+            if (maze1[maze1.size()-1][maze1[0].size()-1]!=0 ){ 
+                playground(maze1);
+                maze1.clear();
+                maze1.shrink_to_fit();
+                v.clear();
+                v.shrink_to_fit();
+                check = false ;
+                positionj.clear() ;
+                positionj.shrink_to_fit() ;
+                positioni.clear() ;
+                positioni.shrink_to_fit() ;
+                copycopymaze.clear() ;
+                copycopymaze.shrink_to_fit();
+                paintingi.clear() ;
+                paintingi.shrink_to_fit();
+                paintingj.clear() ;
+                paintingj.shrink_to_fit();
+                paintingiz.clear() ;
+                paintingiz.shrink_to_fit();
+                paintingjz.clear() ;
+                paintingjz.shrink_to_fit();
+                jump15 :
+                cout << "if you want to continue choose yes if you want to quit choose no " << endl ;
+                setConsoleColor(2);
+                cout << " 1.yes" << endl ;
+                setConsoleColor(4);            
+                cout << " 2.no" << endl ;
+                setConsoleColor(7); 
+                x=_getch();
+                if (x == '1'){
+                    goto jump ;
+                }
+                if (x == '2'){
+                    setConsoleColor(2);
+                    cout << "GOOD GAME " << endl ;
+                    setConsoleColor(7);
+                    return ;
+                }
+                else {
+                    cout << "please choose 1 or 2 " << endl ;
+                    goto jump15 ;
+                }
+
+    
+            }
+            else {
+                cout << "this is not possible please try again " << endl ;
+
+            }
+
+
+            //////
         }
         else if (x == '2'){
-            int row , column , linee = 0 , soton=0 ;
-            string name = "" , address = "" , liner = "" ;
-            vector<int> v;
 
-            // how to get a file and put it in the maze //
             cout << "please enter your custom map adress " << endl;
             cin >> address ;
+
+
+            linee = 0 ; soton=0 ;
+            string name = "" , liner = "" ;
+
+            // how to get a file and put it in the maze //
 
             address = "maps/" + address + ".txt";
             ifstream map(address);
@@ -326,21 +417,15 @@ void main_output(){
 
             vector<vector<int>> maze1 = vector_generating (linee , soton);
 
-            int ** maze = new int* [linee];
-            for (int i=0 ; i<soton ; ++i){
-                maze[i] = new int [soton];
-            }    
-            for (int i=0 ; i<linee ; ++i)
-                for (int j=0 ; j<soton ; ++j)
-                    maze[i][j] = v[i*soton+ j];
-
             for (int i=0 ; i<linee ; ++i){ 
                 for (int j=0 ; j<soton ; ++j){ 
-                    maze1[i][j] = maze[i][j] ;
+                    maze1[i][j] = v[i*soton+ j];
                 }
             }
             if (maze1[maze1.size()-1][maze1[0].size()-1]!=0 ){ 
                 playground(maze1);
+                maze1.clear();
+                maze1.shrink_to_fit();
                 v.clear();
                 v.shrink_to_fit();
                 check = false ;
@@ -367,7 +452,7 @@ void main_output(){
                 setConsoleColor(7); 
                 x=_getch();
                 if (x == '1'){
-                goto jump ;
+                    goto jump ;
                 }
                 if (x == '2'){
                     setConsoleColor(2);
@@ -383,7 +468,9 @@ void main_output(){
     
             }
             else {
-                cout << "this is not possible please try again " << endl ;
+                cout << "this is not possible " << endl ;
+                maze1.clear();
+                maze1.shrink_to_fit();
             }
         //auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         //string timeString = std::ctime(&currentTime);
@@ -530,6 +617,15 @@ void main_output(){
 
         }
     
+    }
+    else if (x == '4'){
+
+    }
+    else if (x == '5'){
+
+    }
+    else if (x == '6'){
+
     }
     else {
     system("cls");        
@@ -930,21 +1026,24 @@ void playground (vector<vector<int>> custom_maze){
         
 
     cout << "please enter your username " << endl ;
-    cin >> username ;
+    cin.ignore();
+    getline (cin , username);
+    //cin >> username ;
     cout << "please enter your maps name " << endl ;
-    cin >> mapsname ;
+    getline(cin , mapsname);
+    //cin >> mapsname ;
 
     print_table_color (custom_maze);
-    copycustom_maze[x][y] = 0;
+    copycustom_maze[x][y] = 0 ;
 
 
+    int timebase = time(0) ;
     jump5 :
     cout << "if you want to go right press D" << endl;
     cout << "if you want to go down press S" << endl ;
     cout << "if you want to go left press A" << endl ;
     cout << "if you want to go up press W" << endl ;
     cout << "if you want to undo press Z" << endl ;
-    int timebase = time(0) ;
     //cout << timebase << endl ;
     while (x !=custom_maze.size()-1 or y != custom_maze[0].size()-1){ 
         jump9 :
@@ -1028,7 +1127,7 @@ void playground (vector<vector<int>> custom_maze){
             cout << "your move is not valid , please try again" << endl ;
             goto jump5 ;
         }
-        //cout<< "sum :" << num << endl ;
+        cout<< "sum :" << num << endl ;
         print_table_color (custom_maze);
     }
     num -= custom_maze[x][y] ;
@@ -1039,22 +1138,25 @@ void playground (vector<vector<int>> custom_maze){
 
     //cout << timeString << endl ;
 
+    ofstream names("names.txt" , ios::app);
+    names << mapsname << endl ;
+    names.close();
 
     if (num == custom_maze[x][y]){
         appendToFile (username , true , timesecond - timebase , timeString , mapsname );
         deleteFirstLineIfMoreThanTenLines();
         createFile (username);
         incrementNumberInFile( username, true);
-        //cout <<" win " << endl ; 
-        cout << timesecond - timebase << endl ;
+        cout <<" win " << endl ; 
+        //cout << timesecond - timebase << endl ;
     }
     else {
         appendToFile (username , false , timesecond - timebase , timeString , mapsname);    
         deleteFirstLineIfMoreThanTenLines();
         createFile (username);
         incrementNumberInFile( username, false);
-        //cout << "lost " << endl ;
-        cout << timesecond - timebase << endl ;
+        cout << "lost " << endl ;
+        //cout << timesecond - timebase << endl ;
         //cout << num ;
     }
 }
@@ -1122,7 +1224,7 @@ void appendToFile(string input, bool result , int num , string date , string map
     ofstream outputFile("output.txt", ios::app);
 
     if (!outputFile.is_open()) {
-        cerr << "Error opening the file!" << endl;
+        //cerr << "Error opening the file!" << endl;
         return;
     }
 
@@ -1143,7 +1245,7 @@ void deleteFirstLineIfMoreThanTenLines() {
     ifstream inputFile(filename);
 
     if (!inputFile.is_open()) {
-        cerr << "Error opening the file!" << endl;
+        //cerr << "Error opening the file!" << endl;
         return;
     }
 
@@ -1164,7 +1266,7 @@ void deleteFirstLineIfMoreThanTenLines() {
         ofstream outputFile(filename, ios::trunc);
 
         if (!outputFile.is_open()) {
-            cerr << "Error opening the file for truncation!" << endl;
+            //cerr << "Error opening the file for truncation!" << endl;
             return;
         }
 
@@ -1179,9 +1281,9 @@ void deleteFirstLineIfMoreThanTenLines() {
 }
 
 bool createFile(string name) {
-    std::string filename = name + ".txt";
+    string filename = name + ".txt";
 
-    std::ifstream fileCheck(filename.c_str());
+    ifstream fileCheck(filename.c_str());
     if (!fileCheck.good()) {
         std::ofstream file(filename.c_str());
       //  std::cout << "File '" << filename << "' created successfully." << std::endl;
@@ -1225,7 +1327,7 @@ int incrementNumberInFile(string fileName, bool incrementSecondLine) {
         outFile.close();
         //std::cout << "Numbers written to file: " << number1 << " and " << number2 << std::endl;
     } else {
-        std::cerr << "Error opening file for writing!" << std::endl;
+        //std::cerr << "Error opening file for writing!" << std::endl;
         return 1;  // Return an error code
     }
 
