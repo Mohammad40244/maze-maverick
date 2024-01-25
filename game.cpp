@@ -21,6 +21,7 @@ bool check = false ;
 vector<int> positionj ;
 vector<int> positioni ;
 vector<vector<int>> copycopymaze ;
+vector<vector<int>> copycopycopymaze ;
 vector<int> paintingi ;
 vector<int> paintingj ;
 vector<int> paintingiz ;
@@ -37,7 +38,7 @@ vector<vector<int>> vector_generating ( int copyrow , int copycolumn);
 void path_finding (vector<vector<int>> maze , int row , int column , int copyrow , int copycolumn , int sum , int length);
 void path_generating (vector<vector<int>> maze , int row , int column , int copyrow , int copycolumn , int sum , int length);
 bool check_is_valid (vector<vector<int>> maze , int row , int column , int copyrow , int copycolumn);
-void print_table(const vector<vector<int>>& table);
+void print_table(const vector<vector<int>> table);
 void print_table_color (const vector<vector<int>>& table);
 void hard_maze(vector<vector<int>> maze , int copyrow , int copycolumn , int length , int max , int min , int maxblock , int minblock);
 void maze_generating (vector<vector<int>> copymaze , int max , int min , int maxblock , int minblock , int length);
@@ -47,7 +48,7 @@ void playground (vector<vector<int>> custom_maze);
 bool check_is_in (int row , int column );
 void main_output ();
 bool check_is_number (string variable );
-
+int incrementNumberInFile(string fileName, bool incrementSecondLine) ;
 
 int main(){ 
     int row=0 , column=0 , copyrow=0 , copycolumn=0 , sum=0 , length=0 , max=0 , min=0 , maxblock=0 , minblock=0 , num=0 ;
@@ -62,7 +63,7 @@ void main_output(){
     int row = 0, column = 0, copyrow = 0, copycolumn = 0, sum = 0, length = 0, max = 0, min = 0, maxblock = 0, minblock = 0, num = 0 , linee = 0 , soton=0 ;
     char x ;
 
-    string name = "" , liner = "" , receiver;
+    string name = "" , liner = "" , receiver , mapsname;
     vector<int> v;
     string variable ;
 
@@ -124,7 +125,8 @@ void main_output(){
                 cout << "please enter a number !!" << endl ;
                 goto jump3 ;
             }
-
+            cout << "please enter your maps name " << endl ;
+            getline( cin >> ws, mapsname );
 
             length = copyrow + copycolumn - 2 ;
             if (length < copyrow + copycolumn - 2 or length%2 != (copyrow + copycolumn)%2 or length > (copyrow*copycolumn)-1 or length + 5 >  (copyrow*copycolumn) ){
@@ -133,7 +135,22 @@ void main_output(){
             }
             vector<vector<int>> maze = vector_generating (copyrow , copycolumn);
             vector<vector<int>> copymaze = vector_generating (copyrow , copycolumn);
+            cout << copymaze.size();
             simple_maze (maze , copyrow , copycolumn);
+            mapsname = "maps/" + mapsname + ".txt" ;
+            ofstream newmap(mapsname);
+            cout << copycopymaze.size() << endl;
+            sleep(5);
+            for (int i=0 ; i<copyrow ; ++i){
+                for (int j=0 ; j<copycolumn ; ++j){
+                    newmap << copycopycopymaze[i][j] << " ";
+                }
+                newmap << endl ;
+
+            }
+            copycopymaze.clear();
+            copycopymaze.shrink_to_fit();
+            newmap.close();
             maze.clear();
             maze.shrink_to_fit();
             copymaze.clear();
@@ -236,6 +253,10 @@ void main_output(){
                 cout << "please enter a number !!" << endl ;
                 goto jump2 ;
             }
+            cout << "please enter your maps name " << endl ; 
+            getline( cin >> ws , mapsname );
+
+
             if (minblock < 0 or maxblock < 0){
                 cout << " you can not have negetive number of block please choose a positive number " << endl;
                 goto jump2 ;
@@ -259,6 +280,19 @@ void main_output(){
                 goto jump2 ;
             }
             hard_maze (maze , copyrow , copycolumn , length , max , min , maxblock , minblock);
+            mapsname = "./maps/" + mapsname + ".txt" ;
+            ofstream newmap(mapsname);
+
+            for (int i=0 ; i<copyrow ; ++i){
+                for (int j=0 ; j<copycolumn ; ++j){
+                    newmap << copycopycopymaze[i][j] << " ";
+                }
+                newmap << endl ;
+            }
+            newmap.close();
+
+
+
             maze.clear();
             maze.shrink_to_fit();
             copymaze.clear();
@@ -575,8 +609,8 @@ void main_output(){
                 positionj.shrink_to_fit() ;
                 positioni.clear() ;
                 positioni.shrink_to_fit() ;
-                copycopymaze.clear() ;
-                copycopymaze.shrink_to_fit();
+//                copycopymaze.clear() ;
+//                copycopymaze.shrink_to_fit();
                 paintingi.clear() ;
                 paintingi.shrink_to_fit();
                 paintingj.clear() ;
@@ -996,12 +1030,15 @@ for (int i=0 ; i<positioni.size() ; ++i){
 }
     sum -= copycopymaze[positioni[0]][positionj[0]] ;
     copycopymaze[positioni[0]][positionj[0]] = sum;
+    copycopycopymaze = copycopymaze ;
 
     print_table (copycopymaze);
     v.clear();
     v.shrink_to_fit();
     copymaze.clear();
     copymaze.shrink_to_fit();
+    
+    
     return ;
 
 }
@@ -1013,6 +1050,7 @@ void simple_maze(vector<vector<int>> maze , int copyrow , int copycolumn){
     vector<vector<int>> copymaze = maze ;
     path_generating (maze , row , column , copyrow , copycolumn , sum , length);
     maze_generating (copymaze , max , min , maxblock , minblock , length); 
+
     return ;
 }
 
@@ -1146,6 +1184,7 @@ void playground (vector<vector<int>> custom_maze){
         appendToFile (username , true , timesecond - timebase , timeString , mapsname );
         deleteFirstLineIfMoreThanTenLines();
         createFile (username);
+
         incrementNumberInFile( username, true);
         cout <<" win " << endl ; 
         //cout << timesecond - timebase << endl ;
@@ -1177,7 +1216,7 @@ void setConsoleColor(int color) {
     SetConsoleTextAttribute(hConsole, color);
 }
 
-void print_table(const vector<vector<int>>& table) {
+void print_table(const vector<vector<int>> table) {
     int rows = table.size();
 
     //find how much space there is//
@@ -1198,16 +1237,15 @@ void print_table(const vector<vector<int>>& table) {
         }
         cout << endl;
     }
+    
     positionj.clear() ;
     positioni.clear() ;
     positioni.shrink_to_fit();
     positionj.shrink_to_fit();
-    copycopymaze.clear() ;
-    copycopymaze.shrink_to_fit();
+    //copycopymaze.clear() ;
+    //copycopymaze.shrink_to_fit();
     check = false ;
     return ;
-
-
 }
 
 bool check_is_number (string variable){
@@ -1295,27 +1333,27 @@ bool createFile(string name) {
 }
 
 int incrementNumberInFile(string fileName, bool incrementSecondLine) {
+    fileName += ".txt";
     std::ifstream inFile(fileName.c_str());  // Open the file for reading
 
     int number1 = 0, number2 = 0;
-    
+
     if (inFile.is_open()) {
         // If the file exists, read the current numbers
         inFile >> number1;
         inFile >> number2;
         inFile.close();
+    } else {
+        std::cerr << "Error opening file for reading!" << std::endl;
+        return 1;  // Return an error code
     }
-    //else {
-    //    std::cerr << "Error opening file for reading!" << std::endl;
-    //    return 1;  // Return an error code
-    //}
 
     // Increment the first number
-    number1++;
+    number2++;
 
     // Increment the second number if the boolean is true
     if (incrementSecondLine) {
-        number2++;
+        number1++;
     }
 
     std::ofstream outFile(fileName.c_str());  // Open the file for writing
@@ -1324,6 +1362,13 @@ int incrementNumberInFile(string fileName, bool incrementSecondLine) {
         // Write the updated numbers to the file
         outFile << number1 << std::endl;
         outFile << number2 << std::endl;
+
+        // Add current time to the third line
+        std::time_t currentTime = std::time(0);
+        std::tm* now = std::localtime(&currentTime);
+        if (incrementSecondLine){ 
+            outFile << std::put_time(now, "%Y-%m-%d %H:%M:%S") << std::endl;
+        }
         outFile.close();
         //std::cout << "Numbers written to file: " << number1 << " and " << number2 << std::endl;
     } else {
@@ -1333,3 +1378,4 @@ int incrementNumberInFile(string fileName, bool incrementSecondLine) {
 
     return 0;
 }
+
