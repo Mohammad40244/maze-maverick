@@ -860,10 +860,38 @@ void main_output(){
     }
     else if (x == '6'){
         vector<Player> players = loadPlayerData();
-        savePlayerData(players);
-        //vector<Player> loadPlayerData() ;
         inputPlayerData(players);
+        savePlayerData(players);
+        //loadPlayerData() ;
         displayTopPlayers(players) ;
+
+                jump24 :
+                cout << "if you want to continue choose yes if you want to quit choose no " << endl ;
+                setConsoleColor(2);
+                cout << " 1.yes" << endl ;
+                setConsoleColor(4);            
+                cout << " 2.no" << endl ;
+                setConsoleColor(7); 
+                x=_getch();
+                if (x == '1'){
+                goto jump ;
+                }
+                if (x == '2'){
+                    setConsoleColor(2);
+                    cout << "GOOD GAME " << endl ;
+                    setConsoleColor(7);
+                    return ;
+                }
+                else {
+                    cout << "please choose 1 or 2 " << endl ;
+                    goto jump24 ;
+                }
+
+
+
+
+
+        
     }
     else if (x == '7'){
         cout << "GG" << endl ;
